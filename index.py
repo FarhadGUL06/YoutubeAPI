@@ -5,7 +5,8 @@ for Pico W as a mono mp3 song
 import os
 import time
 import subprocess
-import supervisor
+import importlib
+import sys
 from flask import Flask, request, jsonify, send_file
 import pytube
 from pytube import YouTube
@@ -29,7 +30,8 @@ try:
             url = video.watch_url
         except pytube.exceptions.RegexMatchError as regex_error:
             return jsonify({'success': False,
-                            'message': "Error at converting the payload to link: " + str(regex_error)})
+                            'message': "Error at converting the payload to link: "
+                            + str(regex_error)})
         # Download track using url
         try:
             youtube_music = YouTube(url)
@@ -59,13 +61,13 @@ try:
                 song_mono.export("song.mp3", format="mp3")
                 os.remove("song_todo.mp3")
                 return send_file("song.mp3", mimetype="audio/mp3")
-            except IOError as mono_error:
+            except IOError as mono_exception:
                 return jsonify({'success': False,
-                                'message': "Error at converting to mono: " + str(mono_error)})
-        except pytube.exceptions.VideoUnavailable as download_error:
+                                'message': "Error at converting to mono: " + str(mono_exception)})
+        except pytube.exceptions.VideoUnavailable as download_exception:
             return jsonify({'success': False,
-                            'message': "Error at downloading: " + str(download_error)})
+                            'message': "Error at downloading: " + str(download_exception)})
 
     app.run()
-except Exception as e:
-    supervisor.reload()
+except OSError as app_exception:
+    importlib.reload(sys)
