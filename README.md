@@ -11,7 +11,9 @@ This API can downlaod any mp3 file as mono mp3 file
 
 At this time, this API is locally hosted
 
-http://localhost:5000/download_mp3?payload={payload}
+http://localhost:5000/download_mp3?api_key={your_api_key}&payload={your_payload}
+
+The API Key can be stored in .env file of the project. You must create your own. xD
 
 
 * Used resources

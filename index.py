@@ -7,11 +7,15 @@ import time
 import subprocess
 import importlib
 import sys
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
 import pytube
 from pytube import YouTube
 from pydub import AudioSegment
 
+load_dotenv()
+
+api_key = os.environ.get("API_KEY")
 app = Flask(__name__)
 try:
 
@@ -21,9 +25,13 @@ try:
         Function called to download the mp3
         and convert it in mono
         '''
-        payload = request.args.get('payload')
+        # Secure the connection with api_key
+        provided_api_key = request.args.get('api_key')
+        if provided_api_key != api_key:
+            return jsonify({'error': 'Invalid API key'})
         # First find the url for payload
         try:
+            payload = request.args.get('payload')
             query = f"{payload}"
             results = pytube.Search(query).results
             video = results[0]
