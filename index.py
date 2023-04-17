@@ -76,6 +76,6 @@ try:
             return jsonify({'success': False,
                             'message': "Error at downloading: " + str(download_exception)})
 
-    app.run()
+    app.run(host='0.0.0.0' , port=5000)
 except OSError as app_exception:
     importlib.reload(sys)
