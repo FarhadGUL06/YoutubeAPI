@@ -5,6 +5,7 @@
 Platform: Python Flask
 Release Date: 17.04.2023
 This API can downlaod any mp3 file as mono mp3 file
+Don't forget to download FFMPEG: https://phoenixnap.com/kb/install-ffmpeg-ubuntu
 
 
 * API Call
