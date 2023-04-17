@@ -1,4 +1,4 @@
-# Name: Youtube API Downloader
+# Youtube API Downloader
 
 * Description
 
