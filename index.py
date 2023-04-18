@@ -18,6 +18,29 @@ load_dotenv()
 api_key = os.environ.get("API_KEY")
 app = Flask(__name__)
 try:
+    @app.route('/get_link', methods=['GET'])
+    def get_link():
+        '''
+        Get youtube link from payload
+        '''
+        # Secure the connection with api_key
+        provided_api_key = request.args.get('api_key')
+        if provided_api_key != api_key:
+            return jsonify({'error': 'Invalid API key'})
+
+        # First find the url for payload
+        try:
+            payload = request.args.get('payload')
+            query = f"{payload}"
+            results = pytube.Search(query).results
+            video = results[0]
+            url = video.watch_url
+            return jsonify({'success': True,
+                'message': url})
+        except pytube.exceptions.RegexMatchError as regex_error:
+            return jsonify({'success': False,
+                            'message': "Error at converting the payload to link: "
+                            + str(regex_error)})
 
     @app.route('/download_mp3', methods=['GET'])
     def download_mp3():
