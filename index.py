@@ -59,13 +59,11 @@ try:
             url = request.args.get('payload')
             youtube_music = YouTube(url)
             try:
-                # Check the duration to be lower than 6 minutes
-                duration = youtube_music.length
-                # Resolve the situation when it fails when getting duration
-                while type(duration) == type(None):
-                    duration = youtube_music.length
-                if duration > 360:
-                    return jsonify({'error': 'Video duration is too long'})
+                while 'lengthSeconds' not in youtube_music.vid_info.get('videoDetails', {}):
+                    youtube_music = YouTube(url)
+                duration_secs = int(youtube_music.vid_info['videoDetails']['lengthSeconds'])
+                if duration_secs > 360:
+                        return jsonify({'error': 'Video duration is too long'})
             except pytube.exceptions.RegexMatchError as regex_error:
                 return jsonify({'error': 'Error on getting the length'})
             # Download the song
@@ -130,12 +128,11 @@ try:
             youtube_music = YouTube(url)
             try:
                 # Check the duration to be lower than 6 minutes
-                duration = youtube_music.length
-                # Resolve the situation when it fails when getting duration
-                while type(duration) == type(None):
-                    duration = youtube_music.length
-                if duration > 360:
-                    return jsonify({'error': 'Video duration is too long'})
+                while 'lengthSeconds' not in youtube_music.vid_info.get('videoDetails', {}):
+                    youtube_music = YouTube(url)
+                duration_secs = int(youtube_music.vid_info['videoDetails']['lengthSeconds'])
+                if duration_secs > 360:
+                        return jsonify({'error': 'Video duration is too long'})
             except pytube.exceptions.RegexMatchError as regex_error:
                 return jsonify({'error': 'Error on getting the length'})
             # Download the song
