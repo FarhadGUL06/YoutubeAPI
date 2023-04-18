@@ -23,6 +23,12 @@ Get the song Youtube URL:
 http://localhost:5000/get_link?api_key={your_api_key}&payload={your_payload}
 
 
+Download the mp3 file from Youtube URL:
+
+http://localhost:5000/download_mp3_url?api_key={your_api_key}&payload={your_payload}
+
+
+
 The API Key can be stored in .env file of the project. You must create your own. xD
 
 
