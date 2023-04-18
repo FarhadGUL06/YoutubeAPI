@@ -13,7 +13,15 @@ Don't forget to download FFMPEG: https://phoenixnap.com/kb/install-ffmpeg-ubuntu
 
 At this time, this API is locally hosted
 
+Download directly the mp3 song as mono:
+
 http://localhost:5000/download_mp3?api_key={your_api_key}&payload={your_payload}
+
+
+Get the song Youtube URL:
+
+http://localhost:5000/get_link?api_key={your_api_key}&payload={your_payload}
+
 
 The API Key can be stored in .env file of the project. You must create your own. xD
 
