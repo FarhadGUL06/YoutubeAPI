@@ -7,6 +7,7 @@ import time
 import subprocess
 import importlib
 import sys
+from youtube_dl import YoutubeDL
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, send_file
 import pytube
@@ -66,9 +67,18 @@ try:
         # Download track using url
         try:
             youtube_music = YouTube(url)
+            try:
+                # Check the duration to be lower than 6 minutes
+                duration = youtube_music.length
+                if duration > 360:
+                    return jsonify({'error': 'Video duration is too long'})
+            except pytube.exceptions.RegexMatchError as regex_error:
+                return jsonify({'error': 'Error on getting the length'})
+            # Download the song
             video = youtube_music.streams.filter(only_audio=True).first()
             destination = '.'
             out_file = video.download(output_path=destination)
+            # Check the duration to be lesser than 6 minutes
             # If the file is not ready
             while True:
                 if os.path.exists(out_file) and os.path.getsize(out_file) == video.filesize:
