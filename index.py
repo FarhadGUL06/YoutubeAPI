@@ -36,8 +36,11 @@ try:
             results = pytube.Search(query).results
             video = results[0]
             url = video.watch_url
+            # Extract de id from the url
+            video_id = url.split("v=")[1]
             return jsonify({'success': True,
-                'message': url})
+                'message': url,
+                'video_id': video_id})
         except pytube.exceptions.RegexMatchError as regex_error:
             return jsonify({'success': False,
                             'message': "Error at converting the payload to link: "
