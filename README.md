@@ -46,7 +46,11 @@ http://localhost:5000/download_mp3_url?api_key={your_api_key}&payload={your_payl
 
 Both 2 and 3 will send the mp3 as binary file in response.content
 
-The API Key can be stored in .env file of the project. You must create your own. xD
+The API Key can be stored in .env file of the project. You must create your own as:
+
+```
+API_KEY="api_test"
+```
 
 
 
