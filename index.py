@@ -34,11 +34,7 @@ try:
             payload = request.args.get('payload')
             query = f"{payload}"
             results = pytube.Search(query).results
-            indice = 0
-            while 'reelShelfRenderer' in results[indice].video_details:
-                indice += 1
-                
-            video = results[indice]
+            video = results[0]
             url = video.watch_url
             # Extract de id from the url
             video_id = url.split("v=")[1]
