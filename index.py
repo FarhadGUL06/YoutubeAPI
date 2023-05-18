@@ -34,7 +34,11 @@ try:
             payload = request.args.get('payload')
             query = f"{payload}"
             results = pytube.Search(query).results
-            video = results[0]
+            indice = 0
+            while 'reelShelfRenderer' in results[indice].video_details:
+                indice += 1
+                
+            video = results[indice]
             url = video.watch_url
             # Extract de id from the url
             video_id = url.split("v=")[1]
@@ -93,6 +97,8 @@ try:
                 song = AudioSegment.from_file("song_todo.mp3", format="mp3")
                 # convert to mono
                 song_mono = song.set_channels(1)
+                #song_mono = song_mono.set_frame_rate(32000)
+
                 # export as mono MP3 file
                 song_mono.export("song.mp3", format="mp3")
                 os.remove("song_todo.mp3")
@@ -162,6 +168,7 @@ try:
                 song = AudioSegment.from_file("song_todo.mp3", format="mp3")
                 # convert to mono
                 song_mono = song.set_channels(1)
+                # song_mono = song_mono.set_frame_rate(32000)
                 # export as mono MP3 file
                 song_mono.export("song.mp3", format="mp3")
                 os.remove("song_todo.mp3")
