@@ -227,7 +227,7 @@ try:
                 '-y'
             ], check=True)
             os.remove(out_file)
-            return send_file("song.wav", mimetype="audio/wav", as_attachment=True, attachment_filename="song.wav")
+            return send_file("song.wav", mimetype="audio/wav")
         except pytube.exceptions.VideoUnavailable as download_exception:
             return jsonify({'success': False,
                             'message': "Error at downloading: " + str(download_exception)})
