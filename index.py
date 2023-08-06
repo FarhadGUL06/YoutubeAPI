@@ -175,7 +175,62 @@ try:
         except pytube.exceptions.VideoUnavailable as download_exception:
             return jsonify({'success': False,
                             'message': "Error at downloading: " + str(download_exception)})
-
+        
+    @app.route('/download_wav', methods=['GET'])
+    def download_wav():
+        '''
+        Function called to download the wav
+        '''
+        # Secure the connection with api_key
+        provided_api_key = request.args.get('api_key')
+        if provided_api_key != api_key:
+            return jsonify({'error': 'Invalid API key'})
+        # First find the url for payload
+        try:
+            payload = request.args.get('payload')
+            query = f"{payload}"
+            results = pytube.Search(query).results
+            video = results[0]
+            url = video.watch_url
+        except pytube.exceptions.RegexMatchError as regex_error:
+            return jsonify({'success': False,
+                            'message': "Error at converting the payload to link: "
+                            + str(regex_error)})
+        # Download track using url
+        try:
+            youtube_music = YouTube(url)
+            try:
+                # Check the duration to be lower than 6 minutes
+                while 'lengthSeconds' not in youtube_music.vid_info.get('videoDetails', {}):
+                    youtube_music = YouTube(url)
+                duration_secs = int(youtube_music.vid_info['videoDetails']['lengthSeconds'])
+                if duration_secs > 360:
+                        return jsonify({'error': 'Video duration is too long'})
+            except pytube.exceptions.RegexMatchError as regex_error:
+                return jsonify({'error': 'Error on getting the length'})
+            # Download the song
+            video = youtube_music.streams.filter(only_audio=True).first()
+            destination = '.'
+            out_file = video.download(output_path=destination)
+            # Check the duration to be lesser than 6 minutes
+            # If the file is not ready
+            while True:
+                if os.path.exists(out_file) and os.path.getsize(out_file) == video.filesize:
+                    break
+                time.sleep(1)
+            parent_dir = os.getcwd()
+            print(parent_dir)
+            subprocess.run([
+                'ffmpeg',
+                '-i', os.path.join(parent_dir, out_file),
+                os.path.join(parent_dir, "song.wav"),
+                '-y'
+            ], check=True)
+            os.remove(out_file)
+            return send_file("song.wav", mimetype="audio/wav")
+        except pytube.exceptions.VideoUnavailable as download_exception:
+            return jsonify({'success': False,
+                            'message': "Error at downloading: " + str(download_exception)})
     app.run(host='0.0.0.0' , port=5000)
 except OSError as app_exception:
     importlib.reload(sys)
