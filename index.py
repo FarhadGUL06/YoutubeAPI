@@ -9,7 +9,7 @@ import importlib
 import sys
 from youtube_dl import YoutubeDL
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
 import pytube
 from pytube import YouTube
 from pydub import AudioSegment
@@ -227,7 +227,15 @@ try:
                 '-y'
             ], check=True)
             os.remove(out_file)
-            return send_file("song.wav", mimetype="audio/wav")
+            # Read the WAV file content
+            wav_file_path = os.path.join(parent_dir, "song.wav")
+            with open(wav_file_path, 'rb') as wav_file:
+                wav_data = wav_file.read()
+
+            os.remove(wav_file_path)
+
+            return Response(wav_data, content_type='audio/wav')
+            #return send_file("song.wav", mimetype="audio/wav")
         except pytube.exceptions.VideoUnavailable as download_exception:
             return jsonify({'success': False,
                             'message': "Error at downloading: " + str(download_exception)})
